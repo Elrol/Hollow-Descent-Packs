@@ -2,14 +2,9 @@
   "api_version": "1.0",
   "approved_packs": [
     {
-      "id": "hollow.official.core_cards",
-      "name": "Core Card Set",
-      "version": "1.0.2",
-      "author": "Arrowsend Studio",
-      "description": "Essential starting cards and mechanics.",
-      "min_game_version": "0.8.0",
-      "download_url": "https://github.com/YourStudio/HollowDescent-Packs/releases/download/v1.0.2/core_cards.zip",
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      "id": "example",
+	  "manifest_url": "https://raw.githubusercontent.com/Elrol/Hollow-Descent-Pack-Example/refs/heads/main/manifest.json",
+	  "download_url": "https://github.com/Elrol/Hollow-Descent-Pack-Example/releases/download/1.0.0/example.zip"
     }
   ]
 }
