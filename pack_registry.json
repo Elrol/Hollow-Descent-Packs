@@ -3,6 +3,7 @@
   "approved_packs": [
     {
       "id": "example",
+	  "repository_url": "https://github.com/Elrol/Hollow-Descent-Pack-Example",
 	  "manifest_url": "https://raw.githubusercontent.com/Elrol/Hollow-Descent-Pack-Example/refs/heads/main/manifest.json",
 	  "download_url": "https://github.com/Elrol/Hollow-Descent-Pack-Example/releases/download/1.0.0/example.zip"
     }
