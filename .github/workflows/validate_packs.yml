@@ -1,0 +1,66 @@
+name: Validate Pack Registry
+
+on:
+  push:
+    paths:
+      - 'pack_registry.json'
+      - '.github/workflows/validate_packs.yml'
+  pull_request:
+    paths:
+      - 'pack_registry.json'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Dependencies
+        run: pip install requests
+
+      - name: Validate pack_registry.json
+        run: |
+          python -c "
+          import json, sys, requests
+
+          try:
+              with open('pack_registry.json', 'r') as f:
+                  data = json.load(f)
+          except Exception as e:
+              print(f'::error::Invalid JSON format: {e}')
+              sys.exit(1)
+
+          if 'approved_packs' not in data or not isinstance(data['approved_packs'], list):
+              print('::error::Missing or invalid approved_packs array')
+              sys.exit(1)
+
+          required_keys = ['id', 'repository_url', 'manifest_url', 'download_url']
+          
+          for idx, pack in enumerate(data['approved_packs']):
+              pack_id = pack.get('id', f'Index {idx}')
+              for key in required_keys:
+                  if key not in pack:
+                      print(f'::error::Pack [{pack_id}] missing required key: {key}')
+                      sys.exit(1)
+              
+              # Check HTTP endpoints
+              for url_key in ['repository_url', 'manifest_url', 'download_url']:
+                  url = pack[url_key]
+                  try:
+                      res = requests.head(url, allow_redirects=True, timeout=10)
+                      if res.status_code != 200:
+                          print(f'::error::Pack [{pack_id}] {url_key} returned status {res.status_code}: {url}')
+                          sys.exit(1)
+                      print(f'✓ [{pack_id}] {url_key} verified (200 OK)')
+                  except Exception as e:
+                      print(f'::error::Pack [{pack_id}] failed to reach {url_key}: {e}')
+                      sys.exit(1)
+
+          print('All packs validated successfully!')
+          "
